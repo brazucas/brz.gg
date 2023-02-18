@@ -18,3 +18,8 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+# terraform
+*.tfstate
+*.hcl
+/.cicd/terraform/.terraform
