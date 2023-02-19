@@ -1,0 +1,80 @@
+name: Deployment
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.cicd/**'
+      - '.github/workflows/**'
+      - 'src/**'
+      - 'public/**'
+      - 'package.json'
+      - 'yarn.lock'
+      - '*.js'
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    outputs:
+        s3_bucket_name: ${{ steps.get_bucket_name.outputs.stdout }}
+    steps:
+      - name: Clone the repository code
+        uses: actions/checkout@v2
+      - name: Setup the Terraform CLI
+        uses: hashicorp/setup-terraform@v2
+      - name: Setup AWS Credentials
+        run: |
+          mkdir ~/.aws
+          echo "[default]" > ~/.aws/credentials
+          echo "aws_access_key_id = ${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.aws/credentials
+          echo "aws_secret_access_key = ${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
+          AWS_PROFILE=default && echo AWS_PROFILE=$AWS_PROFILE >> $GITHUB_ENV
+      - name: Initialize the Terraform working directory
+        working-directory: .cicd/terraform
+        id: init
+        run: terraform init -input=false
+      - name: Apply the Terraform execution plan
+        working-directory: .cicd/terraform
+        id: plan
+        run: terraform apply -no-color -auto-approve
+        env:
+          TF_VAR_github_pat: ${{ secrets.GH_PAT }}
+      - name: get bucket name
+        working-directory: .cicd/terraform
+        id: get_bucket_name
+        run: terraform output --raw s3_bucket_name
+      - name: Notify Discord
+        uses: appleboy/discord-action@master
+        with:
+          webhook_id: ${{ secrets.WEBHOOK_ID }}
+          webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
+          args: Opa! o servidor está sendo atualizado e reiniciará em breve (${{ env.COMMITS_COUNT }} mudanças realizadas por ${{ env.AUTHOR }})
+
+  build_and_sync:
+    needs: terraform
+    name: Build project and sync to s3
+    runs-on: ubuntu-latest
+    outputs:
+        samp_server_ip_address: ${{ needs.terraform.outputs.s3_bucket_name }}
+    steps:
+      - name: Clone the repository code
+        uses: actions/checkout@v2
+      - name: Setup NodeJS
+        uses: actions/setup-node@v2
+        with: 
+          node-version: "lts/*"
+      - name: Run migrations
+        run: |
+          yarn install
+          yarn build
+      - name: Sync to s3
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ${{ needs.terraform.outputs.s3_bucket_name }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'sa-east-1'
+          SOURCE_DIR: 'dist'
