@@ -1,37 +1,22 @@
-# astrolus
+[![Deployment](https://github.com/brazucas/brz.gg/actions/workflows/deploy.yml/badge.svg)](https://github.com/brazucas/brz.gg/actions/workflows/deploy.yml)
 
-A page template built with astro and tailwindcss using tailus blocks.
+# brz.gg
 
-![Tailus astro based theme](./public/astrolus-light.png)
-![Tailus astro based dark theme](./public/astrolus-dark.png)
+Site oficial do Brazuca's: [brz.gg](https://brz.gg)
 
-## 🚀 Project Structure
+## 🚀 Astrolus
 
-Inside of your Astro project, you'll see the following folders and files:
+O site foi desenvolvido utilizando o Astro, um template para Next.js e Tailwind.
 
-```
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── components/
-│   │   └── Card.astro
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+[Saiba mais](https://tailus.gumroad.com/l/astrolus)
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+# 👨‍💻 Contribuindo
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Fique a vontade para contribuir com o projeto, seja corrigindo erros, adicionando novas funcionalidades ou até mesmo melhorando a documentação.
 
-Any static assets, like images, can be placed in the `public/` directory.
+## 🧞 Comandos
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
+Todos os comandos são executados na raíz do projeto, no terminal:
 
 | Command                | Action                                             |
 | :--------------------- | :------------------------------------------------- |
@@ -42,6 +27,6 @@ All commands are run from the root of the project, from a terminal:
 | `npm run astro ...`    | Run CLI commands like `astro add`, `astro preview` |
 | `npm run astro --help` | Get help using the Astro CLI                       |
 
-## 👀 Want to learn more?
+## 👀 Interessado?
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Entre em contato com a gente no [Discord](https://discord.brz.gg).
