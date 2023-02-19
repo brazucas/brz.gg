@@ -44,13 +44,7 @@ jobs:
         working-directory: .cicd/terraform
         id: get_bucket_name
         run: terraform output --raw s3_bucket_name
-      - name: Notify Discord
-        uses: appleboy/discord-action@master
-        with:
-          webhook_id: ${{ secrets.WEBHOOK_ID }}
-          webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
-          args: Opa! o servidor está sendo atualizado e reiniciará em breve (${{ env.COMMITS_COUNT }} mudanças realizadas por ${{ env.AUTHOR }})
-
+        
   build_and_sync:
     needs: terraform
     name: Build project and sync to s3
