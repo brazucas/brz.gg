@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "brz_gg" {
-  bucket = "brz.gg"
+  bucket = local.s3_origin_id
 
   tags = {
     Name = "website"

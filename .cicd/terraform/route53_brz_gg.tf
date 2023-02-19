@@ -1,6 +1,6 @@
 resource "aws_route53_record" "brz_gg" {
   zone_id = data.terraform_remote_state.brz_state.outputs.brz_gg_zone_id
-  name    = "brz.gg"
+  name    = local.brz_gg_domain
   type    = "A"
 
   alias {
@@ -12,7 +12,7 @@ resource "aws_route53_record" "brz_gg" {
 
 resource "aws_route53_record" "www_brz_gg" {
   zone_id = data.terraform_remote_state.brz_state.outputs.brz_gg_zone_id
-  name    = "www.brz.gg"
+  name    = local.www_brz_gg_domain
   type    = "A"
 
   alias {

@@ -1,12 +1,8 @@
-locals {
-  s3_origin_id = "brz.gg"
-}
-
 resource "aws_acm_certificate" "cert" {
   provider = aws.us-east-1
-  domain_name       = "brz.gg"
+  domain_name       = local.brz_gg_domain
   validation_method = "DNS"
-  subject_alternative_names = ["www.brz.gg"]
+  subject_alternative_names = [local.www_brz_gg_domain]
 
   lifecycle {
     create_before_destroy = true
@@ -36,7 +32,7 @@ resource "aws_acm_certificate_validation" "cert" {
 }
 
 resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
-  comment = "brz.gg"
+  comment = local.brz_gg_domain
 }
 
 resource "aws_cloudfront_distribution" "s3_distribution" {
@@ -57,11 +53,11 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   # Configure logging here if required 	
 #   logging_config {
 #    include_cookies = false
-#    bucket          = "brz.gg"
+#    bucket          = local.brz_gg_domain
 #    prefix          = "brz_gg"
 #   }
 
-  aliases = ["brz.gg", "www.brz.gg"]
+  aliases = [local.brz_gg_domain, local.www_brz_gg_domain]
 
   default_cache_behavior {
     viewer_protocol_policy = "redirect-to-https"
