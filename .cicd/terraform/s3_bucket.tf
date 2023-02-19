@@ -56,19 +56,6 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "brz_gg_sse" {
     }
   }
 }
-
-resource "aws_s3_bucket_website_configuration" "brz_gg_website" {
-  bucket = aws_s3_bucket.brz_gg.id
-
-  index_document {
-    suffix = "index.html"
-  }
-
-  error_document {
-    key = "error.html"
-  }
-}
-
 resource "aws_s3_bucket_lifecycle_configuration" "brz_gg_lifecycle" {
   bucket = aws_s3_bucket.brz_gg.id
 
