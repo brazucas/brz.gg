@@ -44,7 +44,7 @@ jobs:
         working-directory: .cicd/terraform
         id: get_bucket_name
         run: terraform output --raw s3_bucket_name
-        
+
   build_and_sync:
     needs: terraform
     name: Build project and sync to s3
@@ -58,7 +58,7 @@ jobs:
         uses: actions/setup-node@v2
         with: 
           node-version: "lts/*"
-      - name: Run migrations
+      - name: Build project
         run: |
           yarn install
           yarn build
