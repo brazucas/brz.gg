@@ -66,8 +66,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     cached_methods         = ["GET", "HEAD"]
     target_origin_id       = local.s3_origin_id
     min_ttl                = 0
-    default_ttl            = 86400
-    max_ttl                = 31536000
+    default_ttl            = 3600
+    max_ttl                = 86400
 
     forwarded_values {
       query_string = false
@@ -94,8 +94,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     }
 
     min_ttl                = 0
-    default_ttl            = 86400
-    max_ttl                = 31536000
+    default_ttl            = 3600
+    max_ttl                = 86400
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
   }
@@ -109,28 +109,6 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     forwarded_values {
       query_string = false
       headers      = ["Origin"]
-
-      cookies {
-        forward = "none"
-      }
-    }
-
-    min_ttl                = 0
-    default_ttl            = 86400
-    max_ttl                = 31536000
-    compress               = true
-    viewer_protocol_policy = "redirect-to-https"
-  }
-
-  # Cache behavior with precedence 1
-  ordered_cache_behavior {
-    path_pattern     = "/content/*"
-    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
-    cached_methods   = ["GET", "HEAD"]
-    target_origin_id = local.s3_origin_id
-
-    forwarded_values {
-      query_string = false
 
       cookies {
         forward = "none"
