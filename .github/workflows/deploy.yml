@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
         s3_bucket_name: ${{ steps.get_bucket_name.outputs.stdout }}
-        cloudfront_distribution_id: ${{ steps.cloudfront_distribution_id.outputs.stdout }}
+        cloudfront_distribution_id: ${{ steps.get_distribution_id.outputs.stdout }}
     steps:
       - name: Clone the repository code
         uses: actions/checkout@v2
@@ -52,7 +52,7 @@ jobs:
 
   build_and_sync:
     needs: terraform
-    name: Build project and sync to s3
+    name: Build project and Deploy
     runs-on: ubuntu-latest
     outputs:
         samp_server_ip_address: ${{ needs.terraform.outputs.s3_bucket_name }}
@@ -73,9 +73,9 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: sa-east-1
-      - name: Copy files to the production website with the AWS CLI
+      - name: Sync dist folder to s3
         run: |
           aws s3 sync dist s3://${{ needs.terraform.outputs.s3_bucket_name }} --acl public-read --follow-symlinks --delete
-      - name: Invalidate cache
+      - name: Invalidate CloudFront cache
         run: |
           aws cloudfront create-invalidation --distribution-id ${{ needs.terraform.outputs.cloudfront_distribution_id }} --paths "/*"
