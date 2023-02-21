@@ -29,4 +29,4 @@ Todos os comandos são executados na raíz do projeto, no terminal:
 
 ## 👀 Interessado?
 
-Entre em contato com a gente no [Discord](https://discord.brz.gg).
+Entre em contato com a gente no [Discord](http://discord.brz.gg).
