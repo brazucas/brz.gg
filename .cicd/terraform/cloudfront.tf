@@ -1,36 +1,3 @@
-resource "aws_acm_certificate" "cert" {
-  provider = aws.us-east-1
-  domain_name       = local.brz_gg_domain
-  validation_method = "DNS"
-  subject_alternative_names = [local.www_brz_gg_domain]
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-resource "aws_route53_record" "cert_validation" {
-  name = "${aws_acm_certificate.cert.domain_validation_options.*.resource_record_name[0]}"
-  type = "${aws_acm_certificate.cert.domain_validation_options.*.resource_record_type[0]}"
-  zone_id = data.terraform_remote_state.brz_state.outputs.brz_gg_zone_id
-  records = ["${aws_acm_certificate.cert.domain_validation_options.*.resource_record_value[0]}"]
-  ttl = 60
-} 
-
-resource "aws_route53_record" "www_cert_validation" {
-  name = "${aws_acm_certificate.cert.domain_validation_options.*.resource_record_name[1]}"
-  type = "${aws_acm_certificate.cert.domain_validation_options.*.resource_record_type[1]}"
-  zone_id = data.terraform_remote_state.brz_state.outputs.brz_gg_zone_id
-  records = ["${aws_acm_certificate.cert.domain_validation_options.*.resource_record_value[1]}"]
-  ttl = 60
-} 
-
-resource "aws_acm_certificate_validation" "cert" {
-  provider = aws.us-east-1
-  certificate_arn         = aws_acm_certificate.cert.arn
-  validation_record_fqdns = ["${aws_route53_record.cert_validation.fqdn}", "${aws_route53_record.www_cert_validation.fqdn}"]
-}
-
 resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
   comment = local.brz_gg_domain
 }
@@ -137,7 +104,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 
   viewer_certificate {
-    acm_certificate_arn = aws_acm_certificate_validation.cert.certificate_arn
+    acm_certificate_arn = aws_acm_certificate_validation.brz_gg_cert.certificate_arn
     ssl_support_method = "sni-only"
   }
 }
