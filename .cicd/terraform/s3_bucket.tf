@@ -56,16 +56,3 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "brz_gg_sse" {
     }
   }
 }
-resource "aws_s3_bucket_lifecycle_configuration" "brz_gg_lifecycle" {
-  bucket = aws_s3_bucket.brz_gg.id
-
-  rule {
-    id      = "glacier_transition"
-    status = "Enabled"
-
-    transition {
-      days          = 30
-      storage_class = "GLACIER"
-    }
-  }
-}
