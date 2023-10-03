@@ -13,7 +13,8 @@
     "@astrojs/react": "^2.0.2",
     "astro": "^1.1.5",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react-dom": "^18.0.0",
+    "react-use-cookie": "^1.4.0"
   },
   "devDependencies": {
     "@astrojs/tailwind": "^1.0.0",

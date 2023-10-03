@@ -1,0 +1,20 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Container from "../components/Container.astro"
+import { LogoutCallbackHandler } from "../components/LogoutCallbackHandler"
+---
+<Layout title="Authentication">
+  <main class="space-y-40 mb-40">
+    <Container>
+      <div class="relative pt-36 ml-auto">
+          <div class="lg:w-2/3 text-center mx-auto">
+              <h1 class="text-gray-900 dark:text-white font-bold text-5xl md:text-6xl xl:text-7xl">
+                Logging you out...
+              </h1>
+          </div>
+      </div>
+    </Container>
+  </main>
+</Layout>
+
+<LogoutCallbackHandler client:load></LogoutCallbackHandler>
