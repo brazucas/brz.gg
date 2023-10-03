@@ -6,7 +6,6 @@ const useFetch = <T>(url: string) => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    console.log("fetching ", url);
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
