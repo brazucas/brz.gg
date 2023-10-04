@@ -23,3 +23,5 @@ pnpm-debug.log*
 *.tfstate
 *.hcl
 /.cicd/terraform/.terraform
+
+.serverless
