@@ -41,11 +41,8 @@ jobs:
           TF_VAR_github_pat: ${{ secrets.GH_PAT }}
 
   build_and_sync:
-    needs: terraform
     name: Build project and Deploy
     runs-on: ubuntu-latest
-    outputs:
-        samp_server_ip_address: ${{ needs.terraform.outputs.s3_bucket_name }}
     steps:
       - name: Clone the repository code
         uses: actions/checkout@v2
