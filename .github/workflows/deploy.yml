@@ -72,3 +72,8 @@ jobs:
         uses: serverless/github-action@v3.2
         with:
           args: deploy
+        env:  
+          AUTH0_DOMAIN: ${{ env.AUTH0_DOMAIN }}
+          AUTH0_CLIENT_ID: ${{ env.AUTH0_CLIENT_ID }}
+          AUTH0_REDIRECT_URI: ${{ env.AUTH0_REDIRECT_URI }}
+          AUTH0_LOGOUT_URI: ${{ env.AUTH0_LOGOUT_URI }}
