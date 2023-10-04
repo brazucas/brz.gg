@@ -17,9 +17,6 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    outputs:
-        s3_bucket_name: ${{ steps.get_bucket_name.outputs.stdout }}
-        cloudfront_distribution_id: ${{ steps.get_distribution_id.outputs.stdout }}
     steps:
       - name: Clone the repository code
         uses: actions/checkout@v2
@@ -42,21 +39,10 @@ jobs:
         run: terraform apply -no-color -auto-approve
         env:
           TF_VAR_github_pat: ${{ secrets.GH_PAT }}
-      - name: get bucket name
-        working-directory: .cicd/terraform
-        id: get_bucket_name
-        run: terraform output --raw s3_bucket_name
-      - name: get distribution id
-        working-directory: .cicd/terraform
-        id: get_distribution_id
-        run: terraform output --raw cloudfront_distribution_id
 
   build_and_sync:
-    needs: terraform
     name: Build project and Deploy
     runs-on: ubuntu-latest
-    outputs:
-        samp_server_ip_address: ${{ needs.terraform.outputs.s3_bucket_name }}
     steps:
       - name: Clone the repository code
         uses: actions/checkout@v2
@@ -67,16 +53,25 @@ jobs:
       - name: Build project
         run: |
           yarn install
-          PUBLIC_AUTH0_DOMAIN=${{ vars.AUTH0_DOMAIN }} PUBLIC_AUTH0_CLIENT_ID=${{ vars.AUTH0_CLIENT_ID }} PUBLIC_AUTH0_REDIRECT_URI=${{ vars.AUTH0_REDIRECT_URI }} PUBLIC_AUTH0_LOGOUT_URI=${{ vars.AUTH0_LOGOUT_URI }} yarn build
+          PUBLIC_AUTH0_DOMAIN=${{ vars.AUTH0_DOMAIN }} \
+          PUBLIC_AUTH0_CLIENT_ID=${{ vars.AUTH0_CLIENT_ID }} \
+          PUBLIC_AUTH0_REDIRECT_URI=${{ vars.AUTH0_REDIRECT_URI }} \
+          PUBLIC_AUTH0_LOGOUT_URI=${{ vars.AUTH0_LOGOUT_URI }} \
+          yarn build
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: sa-east-1
-      - name: Sync dist folder to s3
+      - name: Create .env file
         run: |
-          aws s3 sync dist s3://${{ needs.terraform.outputs.s3_bucket_name }} --acl public-read --follow-symlinks --delete
-      - name: Invalidate CloudFront cache
-        run: |
-          aws cloudfront create-invalidation --distribution-id ${{ needs.terraform.outputs.cloudfront_distribution_id }} --paths "/*"
+          echo "PUBLIC_AUTH0_DOMAIN=${{ vars.AUTH0_DOMAIN }}" >> .env
+          echo "PUBLIC_AUTH0_CLIENT_ID=${{ vars.AUTH0_CLIENT_ID }}" >> .env
+          echo "AUTH0_SECRET=${{ secrets.AUTH0_SECRET }}" >> .env
+          echo "PUBLIC_AUTH0_REDIRECT_URI=${{ vars.AUTH0_REDIRECT_URI }}" >> .env
+          echo "PUBLIC_AUTH0_LOGOUT_URI=${{ vars.AUTH0_LOGOUT_URI }}" >> .env
+      - name: serverless deploy
+        uses: serverless/github-action@v3.2
+        with:
+          args: deploy
