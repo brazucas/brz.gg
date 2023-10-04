@@ -3,7 +3,7 @@ export const useAuthProvider = () => {
     const redirectUri = window.location.href;
     const state = btoa(redirectUri);
 
-    window.location.href = `https://${import.meta.env.PUBLIC_AUTH0_DOMAIN}/authorize?response_type=token&client_id=${import.meta.env.PUBLIC_AUTH0_CLIENT_ID}&redirect_uri=${import.meta.env.PUBLIC_AUTH0_REDIRECT_URI}&state=${state}&scope=openid%20profile%20email`;
+    window.location.href = `https://${import.meta.env.PUBLIC_AUTH0_DOMAIN}/authorize?response_type=code&client_id=${import.meta.env.PUBLIC_AUTH0_CLIENT_ID}&redirect_uri=${import.meta.env.PUBLIC_AUTH0_REDIRECT_URI}&state=${state}&scope=openid%20profile%20email%20offline_access`;
   }
 
   const logoutAction = () => {
