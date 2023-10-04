@@ -2,6 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import Container from "../components/Container.astro"
 import { LogoutCallbackHandler } from "../components/LogoutCallbackHandler"
+
+export const prerender = true;
 ---
 <Layout title="Authentication">
   <main class="space-y-40 mb-40">
