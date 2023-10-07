@@ -11,6 +11,7 @@ const binaryMimeTypes = [
   "image/gif",
   "image/svg+xml",
   "image/svg",
+  "image/x-icon",
 ];
 
 let cachedServer;
