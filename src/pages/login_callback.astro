@@ -20,6 +20,10 @@ const authenticateRequest = await fetch(`${Astro.url.protocol}//${Astro.url.host
   })
 });
 
+if (authenticateRequest.status !== 200) {
+  return Astro.redirect("/");
+}
+
 const authenticate = await authenticateRequest.json();
 ---
 <Layout title="Authentication">
@@ -36,4 +40,4 @@ const authenticate = await authenticateRequest.json();
   </main>
 </Layout>
 
-<LoginCallbackHandler client:load token={authenticate} state={state}></LoginCallbackHandler>
+<LoginCallbackHandler client:load auth={authenticate} state={state}></LoginCallbackHandler>
