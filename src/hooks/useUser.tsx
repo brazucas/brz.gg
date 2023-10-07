@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuthToken } from "./useAuthToken";
+import { useCookies } from "react-cookie";
+import type { OAuthUserInfo } from "../types/oauth.types";
 
 type UserInfo = {
     nickname: string;
@@ -10,9 +12,14 @@ type UserInfo = {
 }
 
 export const useUser = () => {
+    const [cookies, setCookie, removeCookie] = useCookies(['userInfo']);
+
     const { authToken, authTokenExpiresIn } = useAuthToken();
     const [ isUserAuthenticated, setIsAuthenticated ] = useState(false);
     const [ userInfo, setUserInfo ] = useState<UserInfo | null>(null);
+
+    const storeUserInfo = (userInfo: OAuthUserInfo) => setCookie('userInfo', userInfo);
+    const removeUserInfo = () => removeCookie('userInfo');
 
     useEffect(() => {
         const isTokenExpired = new Date() > new Date(authTokenExpiresIn);
@@ -20,19 +27,14 @@ export const useUser = () => {
     }, [authToken, authTokenExpiresIn]);
 
     useEffect(() => {
-        if(isUserAuthenticated) {
-            fetch(`https://${import.meta.env.PUBLIC_AUTH0_DOMAIN}/userinfo`, {
-                headers: {
-                    Authorization: `Bearer ${authToken}`
-                }
-                })
-                .then(response => response.json())
-                .then(data => setUserInfo(data)
-            );
+        const { userInfo } = cookies;
+
+        if (userInfo) {
+            setUserInfo(userInfo);
         }
-    }, [isUserAuthenticated]);
+    }, [cookies]);
 
     return {
-        isUserAuthenticated, userInfo
+        isUserAuthenticated, userInfo, storeUserInfo, removeUserInfo,
     };
 };

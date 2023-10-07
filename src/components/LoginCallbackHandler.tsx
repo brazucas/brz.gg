@@ -1,21 +1,22 @@
 import React, { useEffect } from "react";
 import { useAuthToken } from "../hooks/useAuthToken";
 import PropTypes from 'prop-types';
+import { useUser } from "../hooks/useUser";
+import type { OAuthToken, OAuthUserInfo } from "../types/oauth.types";
 
 type ComponentProps = {
-    token: {
-        access_token: string;
-        refresh_token: string;
-        id_token: string;
-        scope: string;
-        expires_in: number;
-        token_type: string;
+    auth: {
+        token: OAuthToken;
+        user: OAuthUserInfo;
     },
     state: string | null;
 }
 
-export const LoginCallbackHandler: React.FunctionComponent = ({ token, state }: ComponentProps) => {
+export const LoginCallbackHandler: React.FunctionComponent = ({ auth, state }: ComponentProps) => {
     const { setAuthToken, setRefreshToken, setAuthTokenExpiresIn, setAuthTokenType } = useAuthToken();
+    const { storeUserInfo } = useUser();
+
+    const { token, user } = auth;
 
     useEffect(() => {
         const date = new Date();
@@ -24,13 +25,14 @@ export const LoginCallbackHandler: React.FunctionComponent = ({ token, state }: 
         setRefreshToken(token.refresh_token);
         setAuthTokenExpiresIn(date.setTime(date.getTime() + (token.expires_in * 1000)).toString());
         setAuthTokenType(token.token_type);
+        storeUserInfo(user);
 
         if (state) {
             window.location.href = atob(state);
         } else {
             window.location.href = '/';
         }
-    }, [])
+    }, []);
 
     return (
         <></>
