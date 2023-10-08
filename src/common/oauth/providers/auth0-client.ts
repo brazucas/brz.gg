@@ -1,4 +1,4 @@
-import { OAuthClient } from "../../oauth-client";
+import { OAuthClient } from "@/common/oauth-client";
 
 export class Auth0Client extends OAuthClient {
   constructor() {

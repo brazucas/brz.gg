@@ -1,6 +1,6 @@
 import React from 'react';
-import { blog } from '../../constants';
-import useFetch from "../../hooks/useFetch";
+import { blog } from '@/constants';
+import useFetch from "@/hooks/useFetch";
 
 type Articles = {
     posts: Post[];
