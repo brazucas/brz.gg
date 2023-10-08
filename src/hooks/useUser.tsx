@@ -21,9 +21,7 @@ export const useUser = () => {
     const storeUserInfo = (userInfo: OAuthUserInfo) => setCookie('userInfo', userInfo);
 
     useEffect(() => {
-        const isTokenExpired = new Date() > new Date(authTokenExpiresIn);
-
-        setIsAuthenticated(authToken && !isTokenExpired);
+        setIsAuthenticated(!!authToken);
     }, [authToken, authTokenExpiresIn]);
 
     useEffect(() => {
