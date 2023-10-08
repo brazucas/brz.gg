@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuthToken } from "./useAuthToken";
 import { useCookies } from "react-cookie";
-import type { OAuthUserInfo } from "../common/types/oauth.types";
+import type { OAuthUserInfo } from "@/common/types/oauth.types";
 
 type UserInfo = {
     nickname: string;

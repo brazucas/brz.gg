@@ -1,5 +1,5 @@
 import { type APIRoute } from "astro";
-import { Auth0Client } from "../common/oauth/providers/auth0-client";
+import { Auth0Client } from "@/common/oauth/providers/auth0-client";
 
 const oauthClient = new Auth0Client();
 

@@ -1,6 +1,6 @@
 import React from "react";
-import { useAuthProvider } from "../../hooks/useAuthProvider";
-import { useUser } from "../../hooks/useUser";
+import { useAuthProvider } from "@/hooks/useAuthProvider";
+import { useUser } from "@/hooks/useUser";
 
 const LoginButton = () => {
     const { isUserAuthenticated, userInfo } = useUser();
