@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuthToken } from "./useAuthToken";
 import { useCookies } from "react-cookie";
-import type { OAuthUserInfo } from "../types/oauth.types";
+import type { OAuthUserInfo } from "../common/types/oauth.types";
 
 type UserInfo = {
     nickname: string;
@@ -12,17 +12,17 @@ type UserInfo = {
 }
 
 export const useUser = () => {
-    const [cookies, setCookie, removeCookie] = useCookies(['userInfo']);
+    const [cookies, setCookie] = useCookies(['userInfo']);
 
     const { authToken, authTokenExpiresIn } = useAuthToken();
     const [ isUserAuthenticated, setIsAuthenticated ] = useState(false);
     const [ userInfo, setUserInfo ] = useState<UserInfo | null>(null);
 
     const storeUserInfo = (userInfo: OAuthUserInfo) => setCookie('userInfo', userInfo);
-    const removeUserInfo = () => removeCookie('userInfo');
 
     useEffect(() => {
         const isTokenExpired = new Date() > new Date(authTokenExpiresIn);
+
         setIsAuthenticated(authToken && !isTokenExpired);
     }, [authToken, authTokenExpiresIn]);
 
@@ -35,6 +35,6 @@ export const useUser = () => {
     }, [cookies]);
 
     return {
-        isUserAuthenticated, userInfo, storeUserInfo, removeUserInfo,
+        isUserAuthenticated, userInfo, storeUserInfo,
     };
 };
